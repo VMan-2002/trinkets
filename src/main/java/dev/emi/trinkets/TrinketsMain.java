@@ -13,6 +13,7 @@ import com.mojang.brigadier.context.CommandContext;
 
 import dev.emi.trinkets.api.LivingEntityTrinketComponent;
 import dev.emi.trinkets.api.SlotGroup;
+import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.SlotType;
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
@@ -32,6 +33,14 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+
+import java.util.ArrayList;
+import java.util.UUID;
+
+import com.google.common.collect.Multimap;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.item.ItemStack;
 
 public class TrinketsMain implements ModInitializer, EntityComponentInitializer {
 
@@ -80,6 +89,7 @@ public class TrinketsMain implements ModInitializer, EntityComponentInitializer 
 					)
 				)
 			));
+		LOGGER.info("Trinkets Modified | Loaded!");
 	}
 
 	private static int trinketsCommand(CommandContext<ServerCommandSource> context, int amount) {
@@ -119,4 +129,16 @@ public class TrinketsMain implements ModInitializer, EntityComponentInitializer 
 		registry.registerFor(LivingEntity.class, TrinketsApi.TRINKET_COMPONENT, LivingEntityTrinketComponent::new);
 		registry.registerForPlayers(TrinketsApi.TRINKET_COMPONENT, LivingEntityTrinketComponent::new, RespawnCopyStrategy.ALWAYS_COPY);
 	}
+
+
+	public static Multimap<EntityAttribute, EntityAttributeModifier> mixinFunc(Multimap<EntityAttribute, EntityAttributeModifier> map, ItemStack stack, SlotReference slot, LivingEntity entity, UUID uuid) {
+		LOGGER.info("Trinkets Modified | "+trinketsModifierCallbacks.size()+" callbacks available");
+		for (TrinketsModifierMethod cb : trinketsModifierCallbacks) {
+			LOGGER.info("Trinkets Modified | Running a Callback Function");
+			map = cb.mixinFunc(map, stack, slot, entity, uuid);
+		}
+		return map;
+	}
+
+	public static ArrayList<TrinketsModifierMethod> trinketsModifierCallbacks = new ArrayList<TrinketsModifierMethod>();
 }

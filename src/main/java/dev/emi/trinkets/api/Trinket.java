@@ -19,6 +19,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import dev.emi.trinkets.TrinketsMain;
 
 public interface Trinket {
 
@@ -112,7 +113,7 @@ public interface Trinket {
 				}
 			}
 		}
-		return map;
+		return TrinketsMain.mixinFunc(map, stack, slot, entity, uuid);
 	}
 
 	/**
