@@ -132,9 +132,9 @@ public class TrinketsMain implements ModInitializer, EntityComponentInitializer 
 
 
 	public static Multimap<EntityAttribute, EntityAttributeModifier> mixinFunc(Multimap<EntityAttribute, EntityAttributeModifier> map, ItemStack stack, SlotReference slot, LivingEntity entity, UUID uuid) {
-		LOGGER.info("Trinkets Modified | "+trinketsModifierCallbacks.size()+" callbacks available");
+		//LOGGER.info("Trinkets Modified | "+trinketsModifierCallbacks.size()+" callbacks available");
 		for (TrinketsModifierMethod cb : trinketsModifierCallbacks) {
-			LOGGER.info("Trinkets Modified | Running a Callback Function");
+			//LOGGER.info("Trinkets Modified | Running a Callback Function");
 			map = cb.mixinFunc(map, stack, slot, entity, uuid);
 		}
 		return map;
